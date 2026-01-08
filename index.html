@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jorge Meneses | Arquitecto Digital & Mobile Visionary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --secondary: #06b6d4;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #7c3aed 0%, #06b6d4 50%, #10b981 100%);
+            --gradient-radial: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0a0a0f;
+            color: #f1f5f9;
+            overflow-x: hidden;
+            cursor: default;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.light-theme {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        
+        /* Contenedor del fondo 3D */
+        #threejs-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Efecto de partículas 3D */
+        #particles-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.3;
+        }
+        
+        /* Texto con gradiente animado */
+        .animated-gradient {
+            background: linear-gradient(90deg, #7c3aed, #06b6d4, #10b981, #7c3aed);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 8s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Efecto de cristal avanzado */
+        .glass-advanced {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .light-theme .glass-advanced {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+            color: #0f172a !important;
+        }
+        
+        .light-theme .glass-advanced .text-slate-300,
+        .light-theme .glass-advanced .text-slate-400,
+        .light-theme .glass-advanced .text-slate-500 {
+            color: #475569 !important;
+        }
+        
+        .light-theme .glass-advanced .text-white {
+            color: #0f172a !important;
+        }
+        
+        .light-theme .glass-advanced:hover {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+        
+        /* Tarjeta con efecto holográfico */
+        .holographic-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .holographic-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                transparent 20%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 80%
+            );
+            transform: rotate(30deg);
+            transition: transform 0.8s;
+            opacity: 0;
+        }
+        
+        .holographic-card:hover::before {
+            transform: rotate(30deg) translateX(100%);
+            opacity: 1;
+            transition: transform 1s, opacity 0.3s;
+        }
+        
+        /* Cursor personalizado */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #7c3aed;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s, width 0.3s, height 0.3s;
+        }
+        
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #7c3aed;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s;
+        }
+        
+        /* Animación de entrada espectacular */
+        @keyframes float-in {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .float-in {
+            animation: float-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        /* Efecto de iluminación */
+        .glow {
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.2),
+                        0 0 60px rgba(124, 58, 237, 0.1),
+                        0 0 100px rgba(124, 58, 237, 0.05);
+        }
+        
+        /* Efecto de escritura */
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background-color: #06b6d4;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Scroll personalizado */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .light-theme ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 10px;
+        }
+        
+        /* Efecto de línea de tiempo interactiva */
+        .timeline-path {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, #7c3aed, #06b6d4, transparent);
+            opacity: 0.3;
+        }
+        
+        .timeline-node {
+            width: 16px;
+            height: 16px;
+            background: #0a0a0f;
+            border: 3px solid #7c3aed;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .light-theme .timeline-node {
+            background: #f8fafc;
+        }
+        
+        .timeline-node:hover {
+            transform: translateX(-50%) scale(1.5);
+            box-shadow: 0 0 20px #7c3aed;
+        }
+        
+        /* Efecto de distorsión para elementos */
+        .distort-on-hover {
+            transition: transform 0.3s ease;
+        }
+        
+        .distort-on-hover:hover {
+            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+        }
+        
+        /* Animación de carga sutil */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .pulse-subtle {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+        
+        /* Efecto de reflejo */
+        .reflect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reflect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.03) 100%);
+            pointer-events: none;
+        }
+        
+        /* Efecto de texto neón */
+        .neon-text {
+            text-shadow: 0 0 10px rgba(124, 58, 237, 0.7),
+                         0 0 20px rgba(124, 58, 237, 0.5),
+                         0 0 30px rgba(124, 58, 237, 0.3);
+        }
+        
+        /* Grid interactivo */
+        .interactive-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+        
+        .grid-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Efecto de paralaje */
+        .parallax-layer {
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* Modal PDF específico */
+        .pdf-modal-content {
+            width: 90vw;
+            height: 90vh;
+        }
+        
+        /* Botón de credenciales en móvil */
+        .mobile-credentials-btn {
+            display: block !important;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-credentials-btn {
+                display: none !important;
+            }
+        }
+        
+        /* Ajustes para tema light en modales */
+        .light-theme #modalCV,
+        .light-theme #modalCerts,
+        .light-theme #modalPDF {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+        }
+        
+        .light-theme #modalCV > div,
+        .light-theme #modalCerts > div,
+        .light-theme #modalPDF > div {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light-theme .modal-content {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+        
+        .light-theme .modal-content .text-slate-400 {
+            color: #64748b !important;
+        }
+        
+        .light-theme .modal-content .text-slate-500 {
+            color: #6b7280 !important;
+        }
+        
+        .light-theme .modal-content .glass-advanced {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Botones mejorados para tema light */
+        .light-theme .glass-advanced-button {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #0f172a !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light-theme .glass-advanced-button:hover {
+            background: rgba(255, 255, 255, 1) !important;
+            color: #0f172a !important;
+        }
+        
+        /* Responsive mejorado para modales */
+        @media (max-width: 768px) {
+            .modal-mobile {
+                padding: 1rem !important;
+                height: 95vh !important;
+            }
+            
+            .modal-mobile > div {
+                height: 100% !important;
+                border-radius: 1rem !important;
+            }
+            
+            .pdf-modal-content {
+                width: 95vw;
+                height: 95vh;
+            }
+        }
+        
+        /* Animaciones para modales */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .animate-slideInUp {
+            animation: slideInUp 0.3s ease-out;
+        }
+        
+        /* PDF Viewer */
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .pdf-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        
+        .pdf-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Botones mejorados para tema claro */
+        .light-theme button.glass-advanced:not(.bg-gradient-to-r) {
+            background: rgba(255, 255, 255, 0.85) !important;
+            color: #0f172a !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light-theme button.glass-advanced:hover:not(.bg-gradient-to-r) {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: #0f172a !important;
+        }
+        
+        .light-theme .nav-link span {
+            color: #475569 !important;
+        }
+        
+        .light-theme .nav-link:hover span {
+            color: #0f172a !important;
+        }
+        
+        /* Nuevos estilos para efectos 3D */
+        .floating-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(20px);
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .light-theme #threejs-background {
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    
+    <!-- Fondo 3D Avanzado -->
+    <div id="threejs-background"></div>
+    
+    <!-- Cursor personalizado -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-dot"></div>
+    
+    <!-- Fondo 3D con Three.js -->
+    <div id="particles-3d"></div>
+    
+    <!-- Luz ambiental -->
+    <div class="fixed inset-0 pointer-events-none z-[-1] opacity-20">
+        <div class="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-purple-500 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-cyan-500 rounded-full blur-[100px]"></div>
+    </div>
+    
+    <!-- Navegación avanzada -->
+    <nav id="navbar" class="fixed w-full z-50 px-4 sm:px-6 py-4 transition-all duration-500">
+        <div class="max-w-7xl mx-auto glass-advanced rounded-2xl px-4 sm:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    JM
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-black tracking-tight">JORGE MENESES</h1>
+                    <div class="text-xs text-slate-400 font-medium tracking-widest hidden sm:block">ARCHITECT OF DIGITAL EXPERIENCES</div>
+                </div>
+            </div>
+            
+            <!-- Navegación principal -->
+            <div class="hidden xl:flex items-center gap-8">
+                <a href="#hero" class="nav-link group">
+                    <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">INICIO</span>
+                    <div class="h-0.5 w-0 group-hover:w-full bg-gradient-to-r from-purple-600 to-cyan-500 transition-all duration-300 mt-1"></div>
+                </a>
+                <a href="#about" class="nav-link group">
+                    <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">SOBRE MÍ</span>
+                    <div class="h-0.5 w-0 group-hover:w-full bg-gradient-to-r from-purple-600 to-cyan-500 transition-all duration-300 mt-1"></div>
+                </a>
+                <a href="#expertise" class="nav-link group">
+                    <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">EXPERTISE</span>
+                    <div class="h-0.5 w-0 group-hover:w-full bg-gradient-to-r from-purple-600 to-cyan-500 transition-all duration-300 mt-1"></div>
+                </a>
+                <a href="#projects" class="nav-link group">
+                    <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">PROYECTOS</span>
+                    <div class="h-0.5 w-0 group-hover:w-full bg-gradient-to-r from-purple-600 to-cyan-500 transition-all duration-300 mt-1"></div>
+                </a>
+                <a href="#contact" class="nav-link group">
+                    <span class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">CONTACTO</span>
+                    <div class="h-0.5 w-0 group-hover:w-full bg-gradient-to-r from-purple-600 to-cyan-500 transition-all duration-300 mt-1"></div>
+                </a>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button onclick="toggleTheme()" class="w-8 h-8 sm:w-10 sm:h-10 glass-advanced rounded-xl flex items-center justify-center text-slate-300 hover:text-white transition-colors">
+                    <i class="fas fa-moon text-sm sm:text-base"></i>
+                </button>
+                
+                <!-- Botón de credenciales visible en desktop -->
+                <button onclick="openModal('modalCerts')" class="hidden md:block px-4 sm:px-5 py-2 glass-advanced rounded-xl text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+                    CREDENCIALES
+                </button>
+                
+                <!-- Botón de credenciales para móvil -->
+                <button onclick="openModal('modalCerts')" class="mobile-credentials-btn md:hidden w-8 h-8 sm:w-10 sm:h-10 glass-advanced rounded-xl flex items-center justify-center text-slate-300 hover:text-white transition-colors">
+                    <i class="fas fa-certificate text-sm sm:text-base"></i>
+                </button>
+                
+                <button onclick="openPdfModal('CV/HV-JORGE.pdf', 'Hoja de Vida - Jorge Meneses')" class="px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-xl text-xs sm:text-sm font-bold hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-lg">
+                    <span class="hidden sm:inline">DESCARGAR CV</span>
+                    <span class="sm:hidden">CV</span>
+                </button>
+                
+                <!-- Menú móvil -->
+                <button id="mobile-menu-btn" class="xl:hidden w-8 h-8 sm:w-10 sm:h-10 glass-advanced rounded-xl flex items-center justify-center text-slate-300">
+                    <i class="fas fa-bars text-sm sm:text-lg"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Menú móvil desplegable -->
+        <div id="mobile-menu" class="xl:hidden mt-4 glass-advanced rounded-2xl p-6 hidden animate-slideInUp">
+            <div class="flex flex-col space-y-4">
+                <a href="#hero" class="text-base sm:text-lg font-semibold text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800">Inicio</a>
+                <a href="#about" class="text-base sm:text-lg font-semibold text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800">Sobre mí</a>
+                <a href="#expertise" class="text-base sm:text-lg font-semibold text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800">Expertise</a>
+                <a href="#projects" class="text-base sm:text-lg font-semibold text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800">Proyectos</a>
+                <a href="#contact" class="text-base sm:text-lg font-semibold text-slate-300 hover:text-white transition-colors py-2 border-b border-slate-800">Contacto</a>
+                <a href="#contact" onclick="openModal('modalCerts')" class="text-base sm:text-lg font-semibold text-slate-300 hover:text-white transition-colors py-2">Credenciales</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sección Hero con efecto inmersivo -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center px-4 sm:px-6 pt-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto text-center z-10">
+            <!-- Título principal -->
+            <h1 class="text-3xl sm:text-5xl md:text-8xl font-black tracking-tighter mb-6 sm:mb-8">
+                <span class="block">DISEÑANDO</span>
+                <span class="animated-gradient text-4xl sm:text-5xl md:text-8xl">EXPERIENCIAS</span>
+                <span class="block">DIGITALES ÚNICAS</span>
+            </h1>
+            
+            <!-- Subtítulo dinámico -->
+            <div class="text-lg sm:text-2xl md:text-3xl text-slate-400 mb-8 sm:mb-12 h-12 sm:h-16">
+                <span id="typed-text" class="font-medium"></span><span class="typing-cursor"></span>
+            </div>
+            
+            <!-- Descripción -->
+            <p class="text-base sm:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-10 sm:mb-16">
+                Arquitecto de software especializado en crear ecosistemas móviles nativos y 
+                backend de alto rendimiento. Transformo visiones complejas en experiencias 
+                digitales fluidas, intuitivas y memorables.
+            </p>
+            
+            <!-- Botones de acción -->
+            <div class="flex flex-wrap justify-center gap-4 sm:gap-6 mb-16 sm:mb-20">
+                <a href="#projects" class="group relative px-6 sm:px-10 py-3 sm:py-5 overflow-hidden rounded-2xl">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-cyan-500 opacity-100 group-hover:opacity-90 transition-opacity"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-cyan-500 opacity-0 group-hover:opacity-20 blur-xl transition-opacity"></div>
+                    <span class="relative text-white font-bold text-base sm:text-lg flex items-center gap-2 sm:gap-3">
+                        <span>EXPLORAR PROYECTOS</span>
+                        <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </span>
+                </a>
+                
+                <a href="#contact" class="group px-6 sm:px-10 py-3 sm:py-5 glass-advanced rounded-2xl hover:bg-white/10 transition-all duration-300">
+                    <span class="text-white font-bold text-base sm:text-lg flex items-center gap-2 sm:gap-3">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>CONTACTAR</span>
+                    </span>
+                </a>
+            </div>
+            
+            <!-- Scroll indicator -->
+            <div class="flex justify-center">
+                <div class="scroll-indicator animate-bounce">
+                    <i class="fas fa-chevron-down text-slate-400 text-lg sm:text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Elementos flotantes decorativos -->
+        <div class="absolute top-1/4 left-4 sm:left-10 w-48 sm:w-72 h-48 sm:h-72 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-4 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+        
+        <!-- Código flotante (efecto visual) -->
+        <div class="absolute bottom-20 left-2 sm:left-5 opacity-10 text-xs font-mono hidden lg:block">
+            <div class="mb-2"><span class="text-purple-400">public class</span> <span class="text-cyan-400">DigitalExperience</span> {</div>
+            <div class="ml-4"><span class="text-emerald-400">void</span> <span class="text-yellow-300">create()</span> {</div>
+            <div class="ml-8">MobileArchitecture.<span class="text-blue-400">buildNative()</span>;</div>
+            <div class="ml-8">BackendAPI.<span class="text-blue-400">optimizePerformance()</span>;</div>
+            <div class="ml-4">}</div>
+            <div>}</div>
+        </div>
+    </section>
+
+    <!-- Sección Sobre mí con timeline interactiva -->
+    <section id="about" class="py-16 sm:py-32 px-4 sm:px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-10 sm:gap-20 items-center">
+                <div class="float-in" style="animation-delay: 0.2s">
+                    <div class="mb-8 sm:mb-10">
+                        <h2 class="text-3xl sm:text-5xl font-black mb-4 sm:mb-6">
+                            <span class="text-white">SOBRE</span>
+                            <span class="animated-gradient block">MI TRAYECTORIA</span>
+                        </h2>
+                        <p class="text-lg sm:text-xl text-slate-400 leading-relaxed">
+                            Más de 3 años transformando conceptos abstractos en 
+                            <span class="text-cyan-300 font-semibold">realidades digitales tangibles</span>. 
+                            Mi enfoque fusiona <span class="text-purple-300 font-semibold">precisión técnica</span> 
+                            con <span class="text-emerald-300 font-semibold">visión estratégica</span>.
+                        </p>
+                    </div>
+                    
+                    <!-- Filosofía de desarrollo -->
+                    <div class="glass-advanced rounded-2xl p-6 sm:p-8 mb-6 sm:mb-8 distort-on-hover">
+                        <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                            <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-compass text-xl sm:text-2xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl sm:text-2xl font-bold">FILOSOFÍA DE DESARROLLO</h3>
+                        </div>
+                        <p class="text-slate-400 leading-relaxed text-sm sm:text-base">
+                            Creo que el software excepcional no solo resuelve problemas, sino que 
+                            <span class="text-cyan-300">anticipa necesidades</span> y crea 
+                            <span class="text-purple-300">experiencias memorables</span>. Cada línea de código 
+                            es un compromiso con la excelencia y la innovación.
+                        </p>
+                    </div>
+                    
+                    <!-- Stats en tiempo real -->
+                    <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                        <div class="glass-advanced rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-2xl sm:text-4xl font-black mb-1 sm:mb-2">
+                                <span class="counter" data-target="25">0</span>+
+                            </div>
+                            <div class="text-xs sm:text-sm text-slate-400 font-medium">PROYECTOS COMPLETADOS</div>
+                        </div>
+                        <div class="glass-advanced rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-2xl sm:text-4xl font-black mb-1 sm:mb-2">
+                                <span class="counter" data-target="100">0</span>%
+                            </div>
+                            <div class="text-xs sm:text-sm text-slate-400 font-medium">SATISFACCIÓN CLIENTE</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timeline interactiva -->
+                <div class="relative h-[500px] sm:h-[600px] float-in mt-10 sm:mt-0" style="animation-delay: 0.4s">
+                    <div class="timeline-path"></div>
+                    
+                    <!-- Nodos de la línea de tiempo -->
+                    <div class="absolute top-10 sm:top-20 left-1/2 transform -translate-x-1/2">
+                        <div class="timeline-node"></div>
+                        <div class="absolute left-4 sm:left-20 w-48 sm:w-64 glass-advanced rounded-2xl p-4 sm:p-6">
+                            <div class="text-xs text-purple-400 font-bold mb-1 sm:mb-2">2023 - PRESENTE</div>
+                            <h4 class="text-base sm:text-lg font-bold mb-1 sm:mb-2">Arquitecto de Software</h4>
+                            <p class="text-xs sm:text-sm text-slate-400">Diseñando sistemas a escala empresarial</p>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-32 sm:top-40 left-1/2 transform -translate-x-1/2">
+                        <div class="timeline-node"></div>
+                        <div class="absolute right-4 sm:right-20 w-48 sm:w-64 glass-advanced rounded-2xl p-4 sm:p-6">
+                            <div class="text-xs text-cyan-400 font-bold mb-1 sm:mb-2">2023 - 2024</div>
+                            <h4 class="text-base sm:text-lg font-bold mb-1 sm:mb-2">Mobile Lead Developer</h4>
+                            <p class="text-xs sm:text-sm text-slate-400">Liderando equipos en desarrollo nativo</p>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-52 sm:top-60 left-1/2 transform -translate-x-1/2">
+                        <div class="timeline-node"></div>
+                        <div class="absolute left-4 sm:left-20 w-48 sm:w-64 glass-advanced rounded-2xl p-4 sm:p-6">
+                            <div class="text-xs text-emerald-400 font-bold mb-1 sm:mb-2">2021 - 2024</div>
+                            <h4 class="text-base sm:text-lg font-bold mb-1 sm:mb-2">Tecnólogo SENA</h4>
+                            <p class="text-xs sm:text-sm text-slate-400">Analisis y Desarrollo de software</p>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-72 sm:top-80 left-1/2 transform -translate-x-1/2">
+                        <div class="timeline-node"></div>
+                        <div class="absolute right-4 sm:right-20 w-48 sm:w-64 glass-advanced rounded-2xl p-4 sm:p-6">
+                            <div class="text-xs text-purple-400 font-bold mb-1 sm:mb-2">2020 - 2021</div>
+                            <h4 class="text-base sm:text-lg font-bold mb-1 sm:mb-2">Primeros Proyectos</h4>
+                            <p class="text-xs sm:text-sm text-slate-400">Apps Android personalizadas y APIs REST</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Expertise con visualización 3D -->
+    <section id="expertise" class="py-16 sm:py-32 px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-20">
+                <h2 class="text-3xl sm:text-5xl font-black mb-4 sm:mb-6">
+                    <span class="text-white">DOMINIO</span>
+                    <span class="animated-gradient block">TECNOLÓGICO</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto">
+                    Un ecosistema completo para construir desde interfaces móviles fluidas 
+                    hasta arquitecturas backend de alta disponibilidad.
+                </p>
+            </div>
+            
+            <!-- Grid de habilidades interactivo -->
+            <div class="interactive-grid">
+                <!-- Habilidad 1 -->
+                <div class="grid-item holographic-card glass-advanced p-6 sm:p-8">
+                    <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center">
+                            <i class="fab fa-android text-2xl sm:text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold">Android Nativo</h3>
+                    </div>
+                    <p class="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                        Desarrollo nativo con Java/Kotlin, arquitecturas MVVM/MVI, 
+                        y optimización de rendimiento para millones de usuarios.
+                    </p>
+                    <div class="skill-meter">
+                        <div class="flex justify-between text-xs sm:text-sm mb-1 sm:mb-2">
+                            <span>Experiencia</span>
+                            <span class="font-bold text-purple-400">95%</span>
+                        </div>
+                        <div class="h-1.5 sm:h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-purple-600 to-purple-400 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Habilidad 2 -->
+                <div class="grid-item holographic-card glass-advanced p-6 sm:p-8">
+                    <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-cyan-600 to-cyan-800 flex items-center justify-center">
+                            <i class="fab fa-python text-2xl sm:text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold">FastAPI & Python</h3>
+                    </div>
+                    <p class="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                        APIs de alto rendimiento, arquitecturas asíncronas, 
+                        y microservicios escalables para aplicaciones empresariales.
+                    </p>
+                    <div class="skill-meter">
+                        <div class="flex justify-between text-xs sm:text-sm mb-1 sm:mb-2">
+                            <span>Experiencia</span>
+                            <span class="font-bold text-cyan-400">92%</span>
+                        </div>
+                        <div class="h-1.5 sm:h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Habilidad 3 -->
+                <div class="grid-item holographic-card glass-advanced p-6 sm:p-8">
+                    <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center">
+                            <i class="fas fa-database text-2xl sm:text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold">Arquitectura de Datos</h3>
+                    </div>
+                    <p class="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                        Diseño de bases de datos optimizadas, modelos relacionales y no relacionales, 
+                        y estrategias de caching para alta concurrencia.
+                    </p>
+                    <div class="skill-meter">
+                        <div class="flex justify-between text-xs sm:text-sm mb-1 sm:mb-2">
+                            <span>Experiencia</span>
+                            <span class="font-bold text-emerald-400">90%</span>
+                        </div>
+                        <div class="h-1.5 sm:h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Habilidad 4 -->
+                <div class="grid-item holographic-card glass-advanced p-6 sm:p-8">
+                    <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                            <i class="fab fa-aws text-2xl sm:text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold">Infraestructura Cloud</h3>
+                    </div>
+                    <p class="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                        Despliegue en la nube, contenedores Docker, orquestación con Kubernetes, 
+                        y pipelines CI/CD automatizados.
+                    </p>
+                    <div class="skill-meter">
+                        <div class="flex justify-between text-xs sm:text-sm mb-1 sm:mb-2">
+                            <span>Experiencia</span>
+                            <span class="font-bold text-blue-400">85%</span>
+                        </div>
+                        <div class="h-1.5 sm:h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Habilidad 5 -->
+                <div class="grid-item holographic-card glass-advanced p-6 sm:p-8">
+                    <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-orange-600 to-orange-800 flex items-center justify-center">
+                            <i class="fas fa-fire text-2xl sm:text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold">Firebase Ecosystem</h3>
+                    </div>
+                    <p class="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                        Autenticación en tiempo real, Firestore, Cloud Functions, 
+                        y analíticas para aplicaciones móviles modernas.
+                    </p>
+                    <div class="skill-meter">
+                        <div class="flex justify-between text-xs sm:text-sm mb-1 sm:mb-2">
+                            <span>Experiencia</span>
+                            <span class="font-bold text-orange-400">88%</span>
+                        </div>
+                        <div class="h-1.5 sm:h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-orange-600 to-orange-400 rounded-full" style="width: 88%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Habilidad 6 -->
+                <div class="grid-item holographic-card glass-advanced p-6 sm:p-8">
+                    <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-pink-600 to-pink-800 flex items-center justify-center">
+                            <i class="fas fa-code text-2xl sm:text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold">UX/UI Development</h3>
+                    </div>
+                    <p class="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                        Interfaces intuitivas, diseño responsive, animaciones fluidas, 
+                        y principios de usabilidad aplicados al desarrollo.
+                    </p>
+                    <div class="skill-meter">
+                        <div class="flex justify-between text-xs sm:text-sm mb-1 sm:mb-2">
+                            <span>Experiencia</span>
+                            <span class="font-bold text-pink-400">87%</span>
+                        </div>
+                        <div class="h-1.5 sm:h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-pink-600 to-pink-400 rounded-full" style="width: 87%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Proyectos con efecto galería inmersiva -->
+    <section id="projects" class="py-16 sm:py-32 px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-20">
+                <h2 class="text-3xl sm:text-5xl font-black mb-4 sm:mb-6">
+                    <span class="text-white">PROYECTOS</span>
+                    <span class="animated-gradient block">DESTACADOS</span>
+                </h2>
+                <p class="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto">
+                    Soluciones reales que demuestran capacidad técnica, 
+                    pensamiento estratégico y atención al detalle.
+                </p>
+            </div>
+            
+            <!-- Galería de proyectos -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
+                <!-- Proyecto 1 -->
+                <div class="project-card group h-[350px] sm:h-[400px] rounded-3xl overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-br from-purple-900/30 to-cyan-900/30"></div>
+                    <div class="absolute inset-0 bg-[url('images/CQ-CARNES.png')] bg-cover bg-center group-hover:scale-110 transition-transform duration-700"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+                    
+                    <div class="relative h-full p-6 sm:p-8 flex flex-col justify-end">
+                        <div class="mb-3 sm:mb-4">
+                            <span class="px-2 py-1 sm:px-3 sm:py-1 bg-purple-600/80 text-white text-xs font-bold rounded-full">LANDING PAGE</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">CQ Carnes</h3>
+                        <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">
+                            web de la distribuidora de carnes de los andes
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex gap-1 sm:gap-2">
+                                <span class="px-2 py-1 sm:px-3 sm:py-1 bg-black/50 text-xs rounded-full">html,css,js</span>
+                                
+                            </div>
+                            <button class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition">
+                                <i class="fas fa-arrow-right text-sm sm:text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Proyecto 2 -->
+                <div class="project-card group h-[350px] sm:h-[400px] rounded-3xl overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-900/30 to-emerald-900/30"></div>
+                    <div class="absolute inset-0 bg-[url('images/SocialApp.jpeg')] bg-cover bg-center group-hover:scale-110 transition-transform duration-700"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+                    
+                    <div class="relative h-full p-6 sm:p-8 flex flex-col justify-end">
+                        <div class="mb-3 sm:mb-4">
+                            <span class="px-2 py-1 sm:px-3 sm:py-1 bg-cyan-600/80 text-white text-xs font-bold rounded-full">APP MOBILE</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">RED SOCIAL</h3>
+                        <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">
+                            Red social completa
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex gap-1 sm:gap-2">
+                                <span class="px-2 py-1 sm:px-3 sm:py-1 bg-black/50 text-xs rounded-full">KOTLIN - XML</span>
+                                <span class="px-2 py-1 sm:px-3 sm:py-1 bg-black/50 text-xs rounded-full">Firebase</span>
+                            </div>
+                            <button class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition">
+                                <i class="fas fa-arrow-right text-sm sm:text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Proyecto 3 -->
+                <div class="project-card group h-[350px] sm:h-[400px] rounded-3xl overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/30 to-blue-900/30"></div>
+                    <div class="absolute inset-0 bg-[url('images/contrato-auto.png')] bg-cover bg-center group-hover:scale-110 transition-transform duration-700"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+                    
+                    <div class="relative h-full p-6 sm:p-8 flex flex-col justify-end">
+                        <div class="mb-3 sm:mb-4">
+                            <span class="px-2 py-1 sm:px-3 sm:py-1 bg-emerald-600/80 text-white text-xs font-bold rounded-full">WEB</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">ContratoAuto</h3>
+                        <p class="text-slate-300 mb-4 sm:mb-6 text-sm sm:text-base">
+                           Software que genera contratos laborales de todo tipo en minutos
+                        </p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex gap-1 sm:gap-2">
+                                <span class="px-2 py-1 sm:px-3 sm:py-1 bg-black/50 text-xs rounded-full">HTML,CSS,JS</span>
+                                
+                            </div>
+                            <button class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition">
+                                <i class="fas fa-arrow-right text-sm sm:text-base"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CTA para ver más proyectos -->
+            <div class="text-center">
+                <button class="group px-6 sm:px-10 py-3 sm:py-5 glass-advanced rounded-2xl hover:bg-white/10 transition-all duration-300">
+                    <span class="text-white font-bold text-base sm:text-lg flex items-center gap-2 sm:gap-3">
+                        <span>VER TODOS LOS PROYECTOS</span>
+                        <i class="fas fa-external-link-alt group-hover:translate-x-2 transition-transform"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Contacto con formulario futurista -->
+    <section id="contact" class="py-16 sm:py-32 px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-10 sm:gap-20">
+                <div class="float-in" style="animation-delay: 0.2s">
+                    <h2 class="text-3xl sm:text-5xl font-black mb-6 sm:mb-8">
+                        <span class="text-white">COLABOREMOS</span>
+                        <span class="animated-gradient block">EN TU SIGUIENTE PROYECTO</span>
+                    </h2>
+                    
+                    <p class="text-lg sm:text-xl text-slate-400 mb-8 sm:mb-12 leading-relaxed">
+                        ¿Tienes una idea que desafíe los límites de la tecnología actual? 
+                        Hablemos sobre cómo podemos materializarla juntos.
+                    </p>
+                    
+                    <!-- Información de contacto -->
+                    <div class="space-y-6 sm:space-y-8">
+                        <div class="flex items-center gap-4 sm:gap-6">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-xl sm:text-2xl text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Ubicación</h4>
+                                <p class="text-slate-400 text-sm sm:text-base">Ocaña, Colombia</p>
+                                <p class="text-xs sm:text-sm text-slate-500">Remoto disponible para proyectos globales</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 sm:gap-6">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-cyan-600 to-emerald-500 flex items-center justify-center">
+                                <i class="fas fa-paper-plane text-xl sm:text-2xl text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Email</h4>
+                                <p class="text-slate-400 text-sm sm:text-base">jorgeandresmenesespenaranda@gmail.com</p>
+                                <p class="text-xs sm:text-sm text-slate-500">Respuesta en menos de 12 horas</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 sm:gap-6">
+                            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-emerald-600 to-purple-500 flex items-center justify-center">
+                                <i class="fas fa-clock text-xl sm:text-2xl text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Disponibilidad</h4>
+                                <p class="text-slate-400 text-sm sm:text-base">Marzo 2024 - En adelante</p>
+                                <p class="text-xs sm:text-sm text-slate-500">Abierto a contratos y proyectos freelance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Formulario de contacto -->
+                <div class="float-in" style="animation-delay: 0.4s">
+                    <div class="glass-advanced rounded-3xl p-6 sm:p-10">
+                        <form id="contact-form" class="space-y-6 sm:space-y-8">
+                            <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2 sm:mb-3 text-slate-300">Nombre</label>
+                                    <input type="text" class="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition" placeholder="Tu nombre completo">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2 sm:mb-3 text-slate-300">Email</label>
+                                    <input type="email" class="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition" placeholder="tu@email.com">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 sm:mb-3 text-slate-300">Asunto</label>
+                                <input type="text" class="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" placeholder="¿En qué puedo ayudarte?">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 sm:mb-3 text-slate-300">Mensaje</label>
+                                <textarea rows="4" class="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition" placeholder="Cuéntame sobre tu proyecto, visión y objetivos..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full py-3 sm:py-5 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-xl font-bold text-base sm:text-lg hover:opacity-90 hover:scale-[1.02] transition-all duration-300 shadow-lg">
+                                ENVIAR MENSAJE
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 sm:py-16 px-4 sm:px-6 border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 sm:gap-10">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white font-black text-xl">
+                            JM
+                        </div>
+                        <div>
+                            <div class="text-xl font-black">JORGE MENESES</div>
+                            <div class="text-xs text-slate-500 font-medium">ARCHITECT OF DIGITAL EXPERIENCES</div>
+                        </div>
+                    </div>
+                    <p class="text-slate-500 max-w-md text-sm sm:text-base">
+                        Transformando ideas complejas en experiencias digitales 
+                        fluidas, intuitivas y memorables.
+                    </p>
+                </div>
+                
+                <div class="flex gap-4 sm:gap-6">
+                    <a href="#" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-advanced flex items-center justify-center text-slate-300 hover:text-white hover:scale-110 transition-all">
+                        <i class="fab fa-github text-lg sm:text-xl"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-advanced flex items-center justify-center text-slate-300 hover:text-white hover:scale-110 transition-all">
+                        <i class="fab fa-linkedin-in text-lg sm:text-xl"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-advanced flex items-center justify-center text-slate-300 hover:text-white hover:scale-110 transition-all">
+                        <i class="fab fa-twitter text-lg sm:text-xl"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-advanced flex items-center justify-center text-slate-300 hover:text-white hover:scale-110 transition-all">
+                        <i class="fab fa-dribbble text-lg sm:text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/10 text-center text-slate-500 text-xs sm:text-sm">
+                <p>© 2024 Jorge Andrés Meneses Peñaranda. Todos los derechos reservados.</p>
+                <p class="mt-1 sm:mt-2 text-xs">Diseñado y desarrollado con ❤️ y código limpio.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal PDF (para CV y Certificaciones) -->
+    <div id="modalPDF" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-xl animate-fadeIn">
+        <div class="pdf-modal-content bg-slate-900 w-full max-w-6xl h-[90vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-white/10 animate-slideInUp modal-mobile">
+            <div class="p-4 sm:p-6 border-b border-white/10 flex justify-between items-center px-6 sm:px-10">
+                <div>
+                    <h3 id="pdfModalTitle" class="text-xl sm:text-2xl font-bold">Hoja de Vida</h3>
+                    <p id="pdfModalSubtitle" class="text-xs sm:text-sm text-slate-500">Jorge Meneses - Arquitecto de Software</p>
+                </div>
+                <div class="flex gap-2 sm:gap-3">
+                    <button onclick="downloadCurrentPDF()" class="px-3 py-2 sm:px-5 sm:py-3 glass-advanced rounded-xl text-xs sm:text-sm font-semibold hover:bg-white/10 transition">
+                        <i class="fas fa-download mr-1 sm:mr-2"></i> Descargar
+                    </button>
+                    <button onclick="closeModal('modalPDF')" class="px-3 py-2 sm:px-5 sm:py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-xl font-semibold hover:opacity-90 transition">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+            <div class="flex-grow p-4 sm:p-6 overflow-auto">
+                <!-- Viewer de PDF -->
+                <div class="w-full h-full rounded-2xl overflow-hidden bg-white">
+                    <iframe id="pdfViewer" class="pdf-viewer" src="" frameborder="0">
+                        <div class="pdf-placeholder">
+                            <i class="fas fa-file-pdf"></i>
+                            <p>Cargando PDF...</p>
+                            <p class="text-sm mt-2">Si el PDF no carga, haz clic en "Descargar"</p>
+                        </div>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Credenciales -->
+    <div id="modalCerts" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-xl animate-fadeIn">
+        <div class="modal-content bg-slate-900 w-full max-w-6xl h-[85vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl border border-white/10 animate-slideInUp modal-mobile">
+            <div class="p-4 sm:p-6 border-b border-white/10 flex justify-between items-center px-6 sm:px-10">
+                <h3 class="text-xl sm:text-2xl font-bold">Certificaciones & Credenciales</h3>
+                <button onclick="closeModal('modalCerts')" class="text-slate-400 hover:text-white">
+                    <i class="fas fa-times text-lg sm:text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex-grow overflow-auto p-4 sm:p-6">
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <!-- Certificación 1 -->
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/CCNA-_Introduction_to_Networks_certificate_jorge-meneses11-soy-sena-edu-co_a1351b2b-b089-4674-84f6-66617c3f1fac.pdf', 'CCNA-_Introduction_to_Networks_certificate')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fas fa-graduation-cap text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">CCNA-_Introduction_to_Networks</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+                    
+                    <!-- Certificación 2 -->
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/curso-introductorio-a-la-formacion-integral.pdf', 'curso-introductorio-a-la-formacion-integral')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-cyan-600 to-emerald-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fab fa-python text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">Curso introductorio a la formacion integral</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+                    
+                    <!-- Certificación 3 -->
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/drones-en-fotogramas.pdf', 'Drones en fotogramas')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-emerald-600 to-blue-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fab fa-android text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">Drones en fotogramas</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+                    
+                    <!-- Certificación 4 -->
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/Partner-_JavaScript_Essentials_1_-JSE-_certificate_jorge-meneses11-soy-sena-edu-co_d803a537-6e25-4892-9ade-27f9028ce9e9.pdf', 'Partner-_JavaScript_Essentials_1_-JSE')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-blue-600 to-purple-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fab fa-aws text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">Partner JavaScript Essentials 1 JSE</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+                    
+                    <!-- Certificación 5 -->
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/Partner-_NDG_Linux_Essentials_certificate_jorge-meneses11-soy-sena-edu-co_3234ba6a-23c6-457b-a815-9f41aa153b3b.pdf', 'NDG_Linux_Essentials')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-orange-600 to-red-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fas fa-fire text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">NDG Linux Essentials</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+                    
+                    <!-- Certificación 6 -->
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/Partner-_NDG_Linux_Unhatched_certificate_jorge-meneses11-soy-sena-edu-co_ddb2414d-19b5-42a1-bf1e-e8f6935257b2.pdf', 'Partner-_NDG_Linux_Unhatched_certificate')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-pink-600 to-purple-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fas fa-palette text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">NDG Linux Unhatched</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/Partner-_PCAP_-_Programming_Essentials_in_Python_certificate_jorge-meneses11-soy-sena-edu-co_25930ea5-71db-41ca-b5a0-558c1f491b01.pdf', 'Programming Essentials in Python')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-pink-600 to-purple-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fas fa-palette text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">Programming Essentials in Python</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+
+                    <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/perspectiva-de-los-sistemas-integrados-de-gestion.pdf', 'sitemas integrados de gestion')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-pink-600 to-purple-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fas fa-palette text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">sistemas integrados de gestion</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+                     <div class="glass-advanced rounded-2xl p-4 sm:p-6 hover:bg-white/5 transition cursor-pointer" onclick="openPdfModal('certificaciones/visualizacion-de-datos-y-reportes.pdf', 'visualizacion de datos y reportes')">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-pink-600 to-purple-500 flex items-center justify-center text-white mb-3 sm:mb-4">
+                            <i class="fas fa-palette text-lg sm:text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-1 sm:mb-2 text-base sm:text-lg">visualizacion de datos y reportes</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mb-2 sm:mb-3"></p>
+                        <div class="text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">Ver certificado →</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales para control de PDF
+        let currentPdfFile = '';
+        let currentPdfTitle = '';
+        
+        // ============================================
+        // SISTEMA DE FONDO 3D AVANZADO
+        // ============================================
+        
+        let scene3D, camera3D, renderer3D, controls3D;
+        let particles3D = [];
+        let torusKnot, floatingShapes = [];
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+        
+        function initAdvanced3DBackground() {
+            // Verificar si Three.js está cargado
+            if (typeof THREE === 'undefined') {
+                console.warn('Three.js no está cargado. Inicialización fallida.');
+                return;
+            }
+            
+            try {
+                // Crear escena
+                scene3D = new THREE.Scene();
+                scene3D.fog = new THREE.Fog(0x0a0a0f, 10, 50);
+                
+                // Crear cámara
+                camera3D = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera3D.position.z = 15;
+                camera3D.position.y = 5;
+                
+                // Crear renderer
+                renderer3D = new THREE.WebGLRenderer({ 
+                    antialias: true, 
+                    alpha: true,
+                    powerPreference: "high-performance"
+                });
+                renderer3D.setSize(window.innerWidth, window.innerHeight);
+                renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                renderer3D.setClearColor(0x000000, 0);
+                document.getElementById('threejs-background').appendChild(renderer3D.domElement);
+                
+                // Controles de órbita (solo para desarrollo)
+                if (typeof THREE.OrbitControls !== 'undefined') {
+                    controls3D = new THREE.OrbitControls(camera3D, renderer3D.domElement);
+                    controls3D.enableZoom = false;
+                    controls3D.enablePan = false;
+                    controls3D.autoRotate = true;
+                    controls3D.autoRotateSpeed = 0.5;
+                }
+                
+                // Luz ambiental
+                const ambientLight = new THREE.AmbientLight(0x7c3aed, 0.1);
+                scene3D.add(ambientLight);
+                
+                // Luz direccional
+                const directionalLight = new THREE.DirectionalLight(0x06b6d4, 0.5);
+                directionalLight.position.set(5, 5, 5);
+                scene3D.add(directionalLight);
+                
+                // Luz puntual
+                const pointLight = new THREE.PointLight(0x10b981, 0.5, 50);
+                pointLight.position.set(-5, 5, 5);
+                scene3D.add(pointLight);
+                
+                // Crear geometrías flotantes
+                createFloatingGeometries();
+                
+                // Crear partículas 3D avanzadas
+                createAdvancedParticles();
+                
+                // Crear nube de puntos interactiva
+                createInteractivePointCloud();
+                
+                // Crear torus knot central
+                createTorusKnot();
+                
+                // Eventos del mouse
+                document.addEventListener('mousemove', onDocumentMouseMove, false);
+                window.addEventListener('resize', onWindowResize, false);
+                
+                // Iniciar animación
+                animate3DBackground();
+                
+                console.log('Fondo 3D avanzado inicializado correctamente');
+            } catch (error) {
+                console.error('Error al inicializar el fondo 3D:', error);
+            }
+        }
+        
+        function createFloatingGeometries() {
+            const geometries = [
+                { type: 'sphere', size: 0.5, color: 0x7c3aed, position: [-8, 3, -5] },
+                { type: 'box', size: [0.7, 0.7, 0.7], color: 0x06b6d4, position: [6, -2, -8] },
+                { type: 'tetrahedron', size: 0.6, color: 0x10b981, position: [-5, -3, -10] },
+                { type: 'octahedron', size: 0.5, color: 0x8b5cf6, position: [7, 2, -12] },
+                { type: 'dodecahedron', size: 0.4, color: 0xec4899, position: [-7, 4, -15] }
+            ];
+            
+            geometries.forEach((geo, index) => {
+                let geometry, material, mesh;
+                
+                switch(geo.type) {
+                    case 'sphere':
+                        geometry = new THREE.SphereGeometry(geo.size, 32, 32);
+                        break;
+                    case 'box':
+                        geometry = new THREE.BoxGeometry(...geo.size);
+                        break;
+                    case 'tetrahedron':
+                        geometry = new THREE.TetrahedronGeometry(geo.size);
+                        break;
+                    case 'octahedron':
+                        geometry = new THREE.OctahedronGeometry(geo.size);
+                        break;
+                    case 'dodecahedron':
+                        geometry = new THREE.DodecahedronGeometry(geo.size);
+                        break;
+                }
+                
+                material = new THREE.MeshStandardMaterial({ 
+                    color: geo.color,
+                    emissive: geo.color,
+                    emissiveIntensity: 0.1,
+                    metalness: 0.7,
+                    roughness: 0.2,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                
+                mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(...geo.position);
+                mesh.userData = { 
+                    originalPosition: [...geo.position],
+                    speed: 0.001 + Math.random() * 0.002,
+                    rotationSpeed: 0.001 + Math.random() * 0.003
+                };
+                
+                scene3D.add(mesh);
+                floatingShapes.push(mesh);
+            });
+        }
+        
+        function createAdvancedParticles() {
+            const particleCount = 2000;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+            
+            for (let i = 0; i < particleCount; i++) {
+                // Posiciones aleatorias en un volumen esférico
+                const radius = 20;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                
+                positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+                positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                positions[i * 3 + 2] = radius * Math.cos(phi);
+                
+                // Colores basados en la posición (gradiente)
+                colors[i * 3] = 0.5 + positions[i * 3] / 40; // R
+                colors[i * 3 + 1] = 0.3 + positions[i * 3 + 1] / 40; // G
+                colors[i * 3 + 2] = 0.8 + positions[i * 3 + 2] / 40; // B
+                
+                // Tamaños aleatorios
+                sizes[i] = Math.random() * 0.1 + 0.05;
+            }
+            
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            particles.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.1,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+            
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            particleSystem.userData = { speed: 0.0005 };
+            scene3D.add(particleSystem);
+            particles3D.push(particleSystem);
+        }
+        
+        function createInteractivePointCloud() {
+            const pointCount = 5000;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(pointCount * 3);
+            const colors = new Float32Array(pointCount * 3);
+            
+            for (let i = 0; i < pointCount * 3; i += 3) {
+                // Crear una nube en forma de toro
+                const radius = 10;
+                const tube = 3;
+                const u = Math.random() * Math.PI * 2;
+                const v = Math.random() * Math.PI * 2;
+                
+                positions[i] = (radius + tube * Math.cos(v)) * Math.cos(u);
+                positions[i + 1] = (radius + tube * Math.cos(v)) * Math.sin(u);
+                positions[i + 2] = tube * Math.sin(v);
+                
+                // Colores basados en la posición
+                colors[i] = 0.5 + 0.5 * Math.sin(u); // R
+                colors[i + 1] = 0.3 + 0.7 * Math.cos(v); // G
+                colors[i + 2] = 0.8 + 0.2 * Math.sin(u + v); // B
+            }
+            
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 0.05,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const points = new THREE.Points(geometry, material);
+            points.userData = { 
+                originalPositions: positions.slice(),
+                speed: 0.001
+            };
+            scene3D.add(points);
+            particles3D.push(points);
+        }
+        
+        function createTorusKnot() {
+            const geometry = new THREE.TorusKnotGeometry(3, 1, 100, 16);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x7c3aed,
+                emissive: 0x7c3aed,
+                emissiveIntensity: 0.2,
+                metalness: 0.8,
+                roughness: 0.1,
+                transparent: true,
+                opacity: 0.2,
+                wireframe: true
+            });
+            
+            torusKnot = new THREE.Mesh(geometry, material);
+            torusKnot.position.y = 2;
+            scene3D.add(torusKnot);
+        }
+        
+        function onDocumentMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX) / 100;
+            mouseY = (event.clientY - windowHalfY) / 100;
+        }
+        
+        function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+            
+            camera3D.aspect = window.innerWidth / window.innerHeight;
+            camera3D.updateProjectionMatrix();
+            renderer3D.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        function animate3DBackground() {
+            requestAnimationFrame(animate3DBackground);
+            
+            // Rotar cámara suavemente
+            camera3D.position.x += (mouseX - camera3D.position.x) * 0.05;
+            camera3D.position.y += (-mouseY - camera3D.position.y) * 0.05;
+            camera3D.lookAt(scene3D.position);
+            
+            // Animación de formas flotantes
+            floatingShapes.forEach((shape, index) => {
+                const time = Date.now() * shape.userData.speed;
+                shape.position.y = shape.userData.originalPosition[1] + Math.sin(time + index) * 2;
+                shape.rotation.x += shape.userData.rotationSpeed;
+                shape.rotation.y += shape.userData.rotationSpeed;
+                
+                // Pulsación suave
+                const scale = 1 + Math.sin(time * 2) * 0.1;
+                shape.scale.setScalar(scale);
+            });
+            
+            // Animación de partículas
+            particles3D.forEach((particleSystem) => {
+                particleSystem.rotation.y += particleSystem.userData.speed;
+                
+                // Efecto de respiración en las partículas
+                const time = Date.now() * 0.001;
+                const positions = particleSystem.geometry.attributes.position.array;
+                const originalPositions = particleSystem.userData.originalPositions || positions;
+                
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i] = originalPositions[i] + Math.sin(time + i) * 0.1;
+                    positions[i + 1] = originalPositions[i + 1] + Math.cos(time + i) * 0.1;
+                    positions[i + 2] = originalPositions[i + 2] + Math.sin(time * 0.5 + i) * 0.1;
+                }
+                
+                particleSystem.geometry.attributes.position.needsUpdate = true;
+            });
+            
+            // Animación del torus knot
+            if (torusKnot) {
+                torusKnot.rotation.x += 0.005;
+                torusKnot.rotation.y += 0.003;
+                
+                // Efecto de pulsación
+                const scale = 1 + Math.sin(Date.now() * 0.001) * 0.1;
+                torusKnot.scale.setScalar(scale);
+            }
+            
+            // Actualizar controles si existen
+            if (controls3D) {
+                controls3D.update();
+            }
+            
+            renderer3D.render(scene3D, camera3D);
+        }
+        
+        // Sistema de partículas 3D con Three.js (original)
+        function init3DParticles() {
+            const container = document.getElementById('particles-3d');
+            if (!container) return;
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+            
+            const particlesGeometry = new THREE.BufferGeometry();
+            const count = 1500;
+            
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+            
+            for (let i = 0; i < count * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 50;
+                positions[i + 1] = (Math.random() - 0.5) * 50;
+                positions[i + 2] = (Math.random() - 0.5) * 50;
+                
+                colors[i] = Math.random() * 0.5 + 0.5;
+                colors[i + 1] = Math.random() * 0.3 + 0.3;
+                colors[i + 2] = Math.random() * 0.8 + 0.2;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.6
+            });
+            
+            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particles);
+            
+            camera.position.z = 5;
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.rotation.x += 0.0005;
+                particles.rotation.y += 0.001;
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        
+        // Cursor personalizado
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+        
+        if (cursor && cursorDot) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = `${e.clientX}px`;
+                cursor.style.top = `${e.clientY}px`;
+                
+                cursorDot.style.left = `${e.clientX}px`;
+                cursorDot.style.top = `${e.clientY}px`;
+            });
+            
+            document.addEventListener('mousedown', () => {
+                cursor.style.transform = 'scale(0.5)';
+            });
+            
+            document.addEventListener('mouseup', () => {
+                cursor.style.transform = 'scale(1)';
+            });
+        }
+        
+        // Efecto de escritura automática
+        function initTyped() {
+            const typedElement = document.getElementById('typed-text');
+            if (!typedElement) return;
+            
+            new Typed(typedElement, {
+                strings: [
+                    'Arquitecto de Software',
+                    'Mobile Developer Nativo',
+                    'Backend Engineer',
+                    'Especialista en UX/UI',
+                    'Innovador Digital'
+                ],
+                typeSpeed: 60,
+                backSpeed: 40,
+                backDelay: 2000,
+                loop: true,
+                showCursor: false
+            });
+        }
+        
+        // Animación de contadores
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const increment = target / 100;
+                let current = 0;
+                
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.innerText = Math.floor(current);
+                        setTimeout(updateCounter, 20);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            updateCounter();
+                            observer.unobserve(counter);
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                observer.observe(counter);
+            });
+        }
+        
+        // Navegación suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Cerrar menú móvil si está abierto
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+        
+        // Control del menú móvil
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                const menu = document.getElementById('mobile-menu');
+                if (menu) {
+                    menu.classList.toggle('hidden');
+                }
+            });
+        }
+        
+        // Cambiar navbar al hacer scroll
+        let lastScroll = 0;
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (!navbar) return;
+            
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                navbar.classList.add('glass-advanced');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('glass-advanced');
+                navbar.classList.add('bg-transparent');
+            }
+            
+            // Ocultar/mostrar navbar al hacer scroll
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // Funciones para modales
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // Función para abrir modal de PDF
+        function openPdfModal(pdfFile, title) {
+            currentPdfFile = pdfFile;
+            currentPdfTitle = title;
+            
+            // Configurar el título del modal
+            document.getElementById('pdfModalTitle').textContent = title;
+            document.getElementById('pdfModalSubtitle').textContent = 'Visualización del documento';
+            
+            // Configurar el iframe para mostrar el PDF
+            const pdfViewer = document.getElementById('pdfViewer');
+            pdfViewer.src = pdfFile;
+            
+            // Abrir el modal
+            openModal('modalPDF');
+        }
+        
+        // Función para descargar el PDF actual
+        function downloadCurrentPDF() {
+            if (currentPdfFile) {
+                // Crear un enlace temporal para descargar el PDF
+                const link = document.createElement('a');
+                link.href = currentPdfFile;
+                link.download = currentPdfFile;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        window.onclick = (e) => {
+            if (e.target.id === 'modalCerts') closeModal('modalCerts');
+            if (e.target.id === 'modalPDF') closeModal('modalPDF');
+        }
+        
+        // Manejo del formulario
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Simular envío
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> MENSAJE ENVIADO';
+                    submitBtn.style.background = 'linear-gradient(to right, #10b981, #059669)';
+                    
+                    setTimeout(() => {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        submitBtn.style.background = 'linear-gradient(to right, #7c3aed, #06b6d4)';
+                        this.reset();
+                    }, 2000);
+                }, 1500);
+            });
+        }
+        
+        // Efecto de tema (claro/oscuro)
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            
+            const icon = document.querySelector('#navbar button:nth-child(1) i');
+            if (icon) {
+                if (document.body.classList.contains('light-theme')) {
+                    document.body.style.backgroundColor = '#f8fafc';
+                    document.body.style.color = '#0f172a';
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                    
+                    // Ajustar opacidad del fondo 3D para tema claro
+                    const threeBg = document.getElementById('threejs-background');
+                    if (threeBg) {
+                        threeBg.style.opacity = '0.3';
+                    }
+                } else {
+                    document.body.style.backgroundColor = '#0a0a0f';
+                    document.body.style.color = '#f1f5f9';
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                    
+                    // Restaurar opacidad del fondo 3D para tema oscuro
+                    const threeBg = document.getElementById('threejs-background');
+                    if (threeBg) {
+                        threeBg.style.opacity = '0.6';
+                    }
+                }
+            }
+            
+            // Actualizar todos los botones glass-advanced
+            updateGlassButtonsForTheme();
+        }
+        
+        // Función para actualizar botones glass-advanced según el tema
+        function updateGlassButtonsForTheme() {
+            const glassButtons = document.querySelectorAll('.glass-advanced');
+            glassButtons.forEach(button => {
+                if (document.body.classList.contains('light-theme')) {
+                    button.classList.add('light-theme-glass');
+                    // Asegurar que el texto sea visible
+                    const textElements = button.querySelectorAll('.text-slate-300, .text-slate-400, .text-slate-500');
+                    textElements.forEach(el => {
+                        el.classList.add('light-theme-text');
+                    });
+                } else {
+                    button.classList.remove('light-theme-glass');
+                    const textElements = button.querySelectorAll('.light-theme-text');
+                    textElements.forEach(el => {
+                        el.classList.remove('light-theme-text');
+                    });
+                }
+            });
+        }
+        
+        // Efecto de parallax en elementos
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax-layer');
+            
+            parallaxElements.forEach(element => {
+                const speed = element.getAttribute('data-speed') || 0.3;
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+        
+        // Inicialización cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar efectos
+            initAdvanced3DBackground();
+            init3DParticles();
+            initTyped();
+            animateCounters();
+            
+            // Efecto de entrada para elementos
+            const floatElements = document.querySelectorAll('.float-in');
+            floatElements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Preloader sutil
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+            
+            // Inicializar botones para tema actual
+            updateGlassButtonsForTheme();
+        });
+        
+        // Efecto hover en tarjetas de proyecto
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateY = (x - centerX) / 25;
+                const rotateX = (centerY - y) / 25;
+                
+                this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+        
+        // Detectar dispositivo y aplicar ajustes específicos
+        function detectDevice() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            
+            // Detectar Android TV o Smart TV
+            const isTV = /TV|SMART-TV|ANDROID-TV|Tizen|WebOS|Roku|Xbox|PlayStation|Chromecast/i.test(userAgent);
+            
+            // Detectar dispositivos móviles
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+            
+            // Aplicar ajustes específicos
+            if (isTV) {
+                // Aumentar tamaños de fuente para TV
+                document.body.style.fontSize = '18px';
+                document.querySelectorAll('button, a').forEach(el => {
+                    el.style.minHeight = '48px';
+                    el.style.padding = '12px 24px';
+                });
+            }
+            
+            if (isMobile) {
+                // Asegurar que el botón de credenciales esté visible
+                const credBtn = document.querySelector('.mobile-credentials-btn');
+                if (credBtn) {
+                    credBtn.style.display = 'flex !important';
+                }
+                
+                // Reducir efectos 3D en móviles para mejor rendimiento
+                const threeBg = document.getElementById('threejs-background');
+                if (threeBg) {
+                    threeBg.style.opacity = '0.2';
+                }
+            }
+        }
+        
+        // Ejecutar detección de dispositivo
+        detectDevice();
+    </script>
+</body>
+</html>
