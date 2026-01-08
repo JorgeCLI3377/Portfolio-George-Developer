@@ -1,0 +1,477 @@
+
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --secondary: #06b6d4;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #7c3aed 0%, #06b6d4 50%, #10b981 100%);
+            --gradient-radial: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0a0a0f;
+            color: #f1f5f9;
+            overflow-x: hidden;
+            cursor: default;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.light-theme {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        
+        /* Contenedor del fondo 3D */
+        #threejs-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Efecto de partículas 3D */
+        #particles-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.3;
+        }
+        
+        /* Texto con gradiente animado */
+        .animated-gradient {
+            background: linear-gradient(90deg, #7c3aed, #06b6d4, #10b981, #7c3aed);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 8s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Efecto de cristal avanzado */
+        .glass-advanced {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .light-theme .glass-advanced {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+            color: #0f172a !important;
+        }
+        
+        .light-theme .glass-advanced .text-slate-300,
+        .light-theme .glass-advanced .text-slate-400,
+        .light-theme .glass-advanced .text-slate-500 {
+            color: #475569 !important;
+        }
+        
+        .light-theme .glass-advanced .text-white {
+            color: #0f172a !important;
+        }
+        
+        .light-theme .glass-advanced:hover {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+        
+        /* Tarjeta con efecto holográfico */
+        .holographic-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .holographic-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                transparent 20%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 80%
+            );
+            transform: rotate(30deg);
+            transition: transform 0.8s;
+            opacity: 0;
+        }
+        
+        .holographic-card:hover::before {
+            transform: rotate(30deg) translateX(100%);
+            opacity: 1;
+            transition: transform 1s, opacity 0.3s;
+        }
+        
+        /* Cursor personalizado */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #7c3aed;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s, width 0.3s, height 0.3s;
+        }
+        
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #7c3aed;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.1s;
+        }
+        
+        /* Animación de entrada espectacular */
+        @keyframes float-in {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .float-in {
+            animation: float-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        /* Efecto de iluminación */
+        .glow {
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.2),
+                        0 0 60px rgba(124, 58, 237, 0.1),
+                        0 0 100px rgba(124, 58, 237, 0.05);
+        }
+        
+        /* Efecto de escritura */
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background-color: #06b6d4;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Scroll personalizado */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .light-theme ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 10px;
+        }
+        
+        /* Efecto de línea de tiempo interactiva */
+        .timeline-path {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, #7c3aed, #06b6d4, transparent);
+            opacity: 0.3;
+        }
+        
+        .timeline-node {
+            width: 16px;
+            height: 16px;
+            background: #0a0a0f;
+            border: 3px solid #7c3aed;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .light-theme .timeline-node {
+            background: #f8fafc;
+        }
+        
+        .timeline-node:hover {
+            transform: translateX(-50%) scale(1.5);
+            box-shadow: 0 0 20px #7c3aed;
+        }
+        
+        /* Efecto de distorsión para elementos */
+        .distort-on-hover {
+            transition: transform 0.3s ease;
+        }
+        
+        .distort-on-hover:hover {
+            transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+        }
+        
+        /* Animación de carga sutil */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .pulse-subtle {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+        
+        /* Efecto de reflejo */
+        .reflect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .reflect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(255,255,255,0.03) 100%);
+            pointer-events: none;
+        }
+        
+        /* Efecto de texto neón */
+        .neon-text {
+            text-shadow: 0 0 10px rgba(124, 58, 237, 0.7),
+                         0 0 20px rgba(124, 58, 237, 0.5),
+                         0 0 30px rgba(124, 58, 237, 0.3);
+        }
+        
+        /* Grid interactivo */
+        .interactive-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+        
+        .grid-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .grid-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Efecto de paralaje */
+        .parallax-layer {
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* Modal PDF específico */
+        .pdf-modal-content {
+            width: 90vw;
+            height: 90vh;
+        }
+        
+        /* Botón de credenciales en móvil */
+        .mobile-credentials-btn {
+            display: block !important;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-credentials-btn {
+                display: none !important;
+            }
+        }
+        
+        /* Ajustes para tema light en modales */
+        .light-theme #modalCV,
+        .light-theme #modalCerts,
+        .light-theme #modalPDF {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+        }
+        
+        .light-theme #modalCV > div,
+        .light-theme #modalCerts > div,
+        .light-theme #modalPDF > div {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light-theme .modal-content {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+        
+        .light-theme .modal-content .text-slate-400 {
+            color: #64748b !important;
+        }
+        
+        .light-theme .modal-content .text-slate-500 {
+            color: #6b7280 !important;
+        }
+        
+        .light-theme .modal-content .glass-advanced {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        /* Botones mejorados para tema light */
+        .light-theme .glass-advanced-button {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #0f172a !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light-theme .glass-advanced-button:hover {
+            background: rgba(255, 255, 255, 1) !important;
+            color: #0f172a !important;
+        }
+        
+        /* Responsive mejorado para modales */
+        @media (max-width: 768px) {
+            .modal-mobile {
+                padding: 1rem !important;
+                height: 95vh !important;
+            }
+            
+            .modal-mobile > div {
+                height: 100% !important;
+                border-radius: 1rem !important;
+            }
+            
+            .pdf-modal-content {
+                width: 95vw;
+                height: 95vh;
+            }
+        }
+        
+        /* Animaciones para modales */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .animate-slideInUp {
+            animation: slideInUp 0.3s ease-out;
+        }
+        
+        /* PDF Viewer */
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .pdf-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+        }
+        
+        .pdf-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Botones mejorados para tema claro */
+        .light-theme button.glass-advanced:not(.bg-gradient-to-r) {
+            background: rgba(255, 255, 255, 0.85) !important;
+            color: #0f172a !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .light-theme button.glass-advanced:hover:not(.bg-gradient-to-r) {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: #0f172a !important;
+        }
+        
+        .light-theme .nav-link span {
+            color: #475569 !important;
+        }
+        
+        .light-theme .nav-link:hover span {
+            color: #0f172a !important;
+        }
+        
+        /* Nuevos estilos para efectos 3D */
+        .floating-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(20px);
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .light-theme #threejs-background {
+            opacity: 0.3;
+        }
+  
